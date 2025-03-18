@@ -170,6 +170,8 @@ func (sctx *serveCtx) serve(
 		traffic = "grpc+http"
 	}
 
+	fmt.Printf("GRPC enabled?: %t\n", grpcEnabled)
+
 	if sctx.insecure {
 		var gs *grpc.Server
 		var srv *http.Server
@@ -212,6 +214,7 @@ func (sctx *serveCtx) serve(
 			})
 
 			if grpcEnabled {
+				fmt.Printf("Grpc enabled!")
 				grpcl := m.Match(cmux.HTTP2())
 				sctx.startHandler(errHandler, func() error {
 					return gs.Serve(grpcl)
