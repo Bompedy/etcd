@@ -190,11 +190,11 @@ func (t *Transport) Send(msgs []raftpb.Message) {
 			if isMsgApp(m) {
 				t.ServerStats.SendAppendReq(m.Size())
 			}
-			//if m.Type == raftpb.MsgProp {
-			//	fmt.Printf("Sending out proposal!\n")
-			//} else {
-			//	//fmt.Printf("What type: %d\n", m.Type)
-			//}
+			if m.Type == raftpb.MsgProp {
+				fmt.Printf("Sending out proposal!\n")
+			} else {
+				//	//fmt.Printf("What type: %d\n", m.Type)
+			}
 			p.send(m)
 			continue
 		}
