@@ -304,10 +304,13 @@ func configureHTTPServer(srv *http.Server, cfg config.ServerConfig) error {
 // connections or otherHandler otherwise. Given in gRPC docs.
 func grpcHandlerFunc(grpcServer *grpc.Server, otherHandler http.Handler) http.Handler {
 	if otherHandler == nil {
+		fmt.Printf("Grpc handler function other handler == null\n")
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			grpcServer.ServeHTTP(w, r)
 		})
 	}
+
+	fmt.Printf("normal handler func\n")
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.ProtoMajor == 2 && strings.Contains(r.Header.Get("Content-Type"), "application/grpc") {
 			grpcServer.ServeHTTP(w, r)
