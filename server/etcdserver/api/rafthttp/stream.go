@@ -201,7 +201,11 @@ func (cw *streamWriter) run() {
 
 		case m := <-msgc:
 			err := enc.encode(&m)
-			fmt.Printf("Encoding message: %s bytes - %s\n", m.Type.String(), string(m.Entries[0].Data))
+			if len(m.Entries) > 0 {
+				for i := range m.Entries {
+					fmt.Printf("Encoding message: %s bytes - %s\n", m.Type.String(), string(m.Entries[i].Data))
+				}
+			}
 			if err == nil {
 				unflushed += m.Size()
 
