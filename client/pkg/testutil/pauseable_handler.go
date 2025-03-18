@@ -15,6 +15,7 @@
 package testutil
 
 import (
+	"fmt"
 	"net/http"
 	"sync"
 )
@@ -30,6 +31,7 @@ func (ph *PauseableHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	paused := ph.paused
 	ph.mu.Unlock()
 	if !paused {
+		fmt.Printf("normal handler func using paused\n")
 		ph.Next.ServeHTTP(w, r)
 	} else {
 		hj, ok := w.(http.Hijacker)
