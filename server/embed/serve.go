@@ -312,6 +312,7 @@ func grpcHandlerFunc(grpcServer *grpc.Server, otherHandler http.Handler) http.Ha
 	if otherHandler == nil {
 		fmt.Printf("Grpc handler function other handler == null\n")
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			fmt.Printf("Serving grpc handler for %s\n", r.URL.Path)
 			grpcServer.ServeHTTP(w, r)
 		})
 	}
