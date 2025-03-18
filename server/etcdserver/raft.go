@@ -239,7 +239,7 @@ func (r *raftNode) start(rh *raftReadyHandler) {
 					for i := range rd.Messages {
 						message := rd.Messages[i]
 						for i2 := range message.Entries {
-							fmt.Printf("Sending out message: %d\n", message.Entries[i2].Type.String())
+							fmt.Printf("Sending out message: %s\n", string(message.Entries[i2].Data))
 						}
 					}
 					// gofail: var raftBeforeLeaderSend struct{}
