@@ -18,7 +18,6 @@ import (
 	"bytes"
 	"context"
 	"errors"
-	"fmt"
 	"io"
 	"runtime"
 	"sync"
@@ -134,7 +133,6 @@ func (p *pipeline) handle() {
 func (p *pipeline) post(data []byte) (err error) {
 	u := p.picker.pick()
 	req := createPostRequest(p.tr.Logger, u, RaftPrefix, bytes.NewBuffer(data), "application/protobuf", p.tr.URLs, p.tr.ID, p.tr.ClusterID)
-	fmt.Printf("What data: %s\n", string(data))
 
 	done := make(chan struct{}, 1)
 	ctx, cancel := context.WithCancel(context.Background())
