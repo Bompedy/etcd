@@ -190,7 +190,7 @@ func (t *Transport) Send(msgs []raftpb.Message) {
 			if isMsgApp(m) {
 				t.ServerStats.SendAppendReq(m.Size())
 			}
-			fmt.Printf("yup sending it here?")
+			fmt.Printf("yup sending it here?\n")
 			p.send(m)
 			continue
 		}
