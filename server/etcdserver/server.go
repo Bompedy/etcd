@@ -786,6 +786,7 @@ func (s *EtcdServer) run() {
 					s.compactor.Pause()
 				}
 			} else {
+				fmt.Printf("This is the new leader!\n")
 				if newLeader {
 					t := time.Now()
 					s.leadTimeMu.Lock()

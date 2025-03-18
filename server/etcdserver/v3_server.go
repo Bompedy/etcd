@@ -20,7 +20,6 @@ import (
 	"encoding/base64"
 	"encoding/binary"
 	errorspkg "errors"
-	"go.etcd.io/etcd/api/v3/mvccpb"
 	"strconv"
 	"time"
 
@@ -143,24 +142,24 @@ func (s *EtcdServer) Range(ctx context.Context, r *pb.RangeRequest) (*pb.RangeRe
 }
 
 func (s *EtcdServer) Put(ctx context.Context, r *pb.PutRequest) (*pb.PutResponse, error) {
-	return &pb.PutResponse{
-		Header: &pb.ResponseHeader{},
-		PrevKv: &mvccpb.KeyValue{
-			Key:            r.Key,
-			CreateRevision: 0,
-			ModRevision:    0,
-			Version:        0,
-			Value:          make([]byte, 0), //hence empty value here
-			Lease:          0,
-		},
-	}, nil
-	//
-	//	ctx = context.WithValue(ctx, traceutil.StartTimeKey{}, time.Now())
-	//	resp, err := s.raftRequest(ctx, pb.InternalRaftRequest{Put: r})
-	//	if err != nil {
-	//		return nil, err
-	//	}
-	//	return resp.(*pb.PutResponse), nil
+	//return &pb.PutResponse{
+	//	Header: &pb.ResponseHeader{},
+	//	PrevKv: &mvccpb.KeyValue{
+	//		Key:            r.Key,
+	//		CreateRevision: 0,
+	//		ModRevision:    0,
+	//		Version:        0,
+	//		Value:          make([]byte, 0), //hence empty value here
+	//		Lease:          0,
+	//	},
+	//}, nil
+
+	ctx = context.WithValue(ctx, traceutil.StartTimeKey{}, time.Now())
+	resp, err := s.raftRequest(ctx, pb.InternalRaftRequest{Put: r})
+	if err != nil {
+		return nil, err
+	}
+	return resp.(*pb.PutResponse), nil
 }
 
 func (s *EtcdServer) DeleteRange(ctx context.Context, r *pb.DeleteRangeRequest) (*pb.DeleteRangeResponse, error) {
