@@ -313,8 +313,10 @@ func grpcHandlerFunc(grpcServer *grpc.Server, otherHandler http.Handler) http.Ha
 	fmt.Printf("normal handler func\n")
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.ProtoMajor == 2 && strings.Contains(r.Header.Get("Content-Type"), "application/grpc") {
+			fmt.Printf("normal handler func using grpc\n")
 			grpcServer.ServeHTTP(w, r)
 		} else {
+			fmt.Printf("normal handler func using other\n")
 			otherHandler.ServeHTTP(w, r)
 		}
 	})
