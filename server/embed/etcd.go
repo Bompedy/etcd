@@ -606,6 +606,7 @@ func (e *Etcd) servePeers() {
 			ReadTimeout: 5 * time.Minute,
 			ErrorLog:    defaultLog.New(io.Discard, "", 0), // do not log user error
 		}
+		fmt.Printf("Serving peers!")
 		go srv.Serve(m.Match(cmux.Any()))
 		p.serve = func() error {
 			e.cfg.logger.Info(
