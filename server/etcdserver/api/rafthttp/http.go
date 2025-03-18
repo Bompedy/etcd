@@ -365,8 +365,10 @@ func (h *streamHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	var t streamType
 	switch path.Dir(r.URL.Path) {
 	case streamTypeMsgAppV2.endpoint(h.lg):
+		fmt.Printf("v2 stream type")
 		t = streamTypeMsgAppV2
 	case streamTypeMessage.endpoint(h.lg):
+		fmt.Printf("v3 stream type")
 		t = streamTypeMessage
 	default:
 		h.lg.Debug(
