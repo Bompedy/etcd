@@ -302,6 +302,7 @@ func (c *Cluster) MustNewMember(t testutil.TB) *Member {
 
 // addMember return PeerURLs of the added member.
 func (c *Cluster) addMember(t testutil.TB) types.URLs {
+	fmt.Printf("Adding new member!")
 	m := c.MustNewMember(t)
 
 	scheme := SchemeFromTLSInfo(c.Cfg.PeerTLS)
