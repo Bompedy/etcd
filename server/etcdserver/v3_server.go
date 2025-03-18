@@ -20,7 +20,6 @@ import (
 	"encoding/base64"
 	"encoding/binary"
 	errorspkg "errors"
-	"fmt"
 	"strconv"
 	"time"
 
@@ -155,7 +154,7 @@ func (s *EtcdServer) Put(ctx context.Context, r *pb.PutRequest) (*pb.PutResponse
 	//	},
 	//}, nil
 
-	fmt.Printf("Put!\n")
+	//fmt.Printf("Put!\n")
 	ctx = context.WithValue(ctx, traceutil.StartTimeKey{}, time.Now())
 	resp, err := s.raftRequest(ctx, pb.InternalRaftRequest{Put: r})
 	if err != nil {
