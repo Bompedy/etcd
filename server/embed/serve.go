@@ -489,6 +489,7 @@ func (ac *accessController) ServeHTTP(rw http.ResponseWriter, req *http.Request)
 		return
 	}
 
+	fmt.Printf("Serving htttp from mux\n")
 	ac.mux.ServeHTTP(rw, req)
 }
 
