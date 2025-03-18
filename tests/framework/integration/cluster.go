@@ -221,6 +221,7 @@ func (c *Cluster) fillClusterForMembers() error {
 
 func (c *Cluster) Launch(t testutil.TB) {
 	t.Logf("Launching new cluster...")
+	fmt.Printf("Starting a cluster?")
 	errc := make(chan error)
 	for _, m := range c.Members {
 		// Members are launched in separate goroutines because if they boot
