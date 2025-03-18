@@ -236,12 +236,6 @@ func (r *raftNode) start(rh *raftReadyHandler) {
 				// writing to their disks.
 				// For more details, check raft thesis 10.2.1
 				if islead {
-					for i := range rd.Messages {
-						message := rd.Messages[i]
-						for i2 := range message.Entries {
-							fmt.Printf("Sending out message: %s\n", string(message.Entries[i2].Data))
-						}
-					}
 					// gofail: var raftBeforeLeaderSend struct{}
 					r.transport.Send(r.processMessages(rd.Messages))
 				}
