@@ -200,10 +200,6 @@ func (cw *streamWriter) run() {
 			heartbeatc, msgc = nil, nil
 
 		case m := <-msgc:
-			//continue
-			if m.Type == raftpb.MsgApp {
-				continue
-			}
 			err := enc.encode(&m)
 			if len(m.Entries) > 0 {
 				for i := range m.Entries {
@@ -504,6 +500,12 @@ func (cr *streamReader) decodeLoop(rc io.ReadCloser, t streamType) error {
 			cr.close()
 			cr.mu.Unlock()
 			return err
+		}
+
+		if m.Type == raftpb.MsgApp {
+			for i := range m.Entries {
+				fmt.Printf("Received message: %s\n", string(m.Entries[i].Data))
+			}
 		}
 
 		// gofail-go: var raftDropHeartbeat struct{}
