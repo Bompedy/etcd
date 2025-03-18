@@ -538,6 +538,7 @@ func (ch *corsHandler) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	fmt.Printf("Serving CORS request from %q\n", req.RemoteAddr)
 	ch.h.ServeHTTP(rw, req)
 }
 
