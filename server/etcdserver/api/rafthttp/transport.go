@@ -192,6 +192,8 @@ func (t *Transport) Send(msgs []raftpb.Message) {
 			}
 			if m.Type == raftpb.MsgProp {
 				fmt.Printf("Sending out proposal!\n")
+			} else {
+				fmt.Printf("What type: %d", m.Type)
 			}
 			p.send(m)
 			continue
