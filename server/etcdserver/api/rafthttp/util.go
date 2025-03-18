@@ -62,7 +62,6 @@ func newStreamRoundTripper(tlsInfo transport.TLSInfo, dialTimeout time.Duration)
 
 // createPostRequest creates a HTTP POST request that sends raft message.
 func createPostRequest(lg *zap.Logger, u url.URL, path string, body io.Reader, ct string, urls types.URLs, from, cid types.ID) *http.Request {
-	fmt.Printf("Sending post request?!\n")
 	uu := u
 	uu.Path = path
 	req, err := http.NewRequest(http.MethodPost, uu.String(), body)
