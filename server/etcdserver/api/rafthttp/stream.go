@@ -506,6 +506,10 @@ func (cr *streamReader) decodeLoop(rc io.ReadCloser, t streamType) error {
 			for i := range m.Entries {
 				fmt.Printf("Received message: %s\n", string(m.Entries[i].Data))
 			}
+		} else if m.Type == raftpb.MsgAppResp {
+			for i := range m.Entries {
+				fmt.Printf("Received response for message: %s\n", string(m.Entries[i].Data))
+			}
 		}
 
 		// gofail-go: var raftDropHeartbeat struct{}
