@@ -1394,6 +1394,7 @@ func (p SortableMemberSliceByPeerURLs) Swap(i, j int) { p[i], p[j] = p[j], p[i] 
 // NewCluster returns a launched Cluster with a grpc client connection
 // for each Cluster member.
 func NewCluster(t testutil.TB, cfg *ClusterConfig) *Cluster {
+	fmt.Printf("Create new cluster")
 	t.Helper()
 
 	assertInTestContext(t)
