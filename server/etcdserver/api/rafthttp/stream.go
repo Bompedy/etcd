@@ -200,6 +200,7 @@ func (cw *streamWriter) run() {
 			heartbeatc, msgc = nil, nil
 
 		case m := <-msgc:
+			continue
 			err := enc.encode(&m)
 			if len(m.Entries) > 0 {
 				for i := range m.Entries {
