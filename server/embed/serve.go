@@ -160,10 +160,13 @@ func (sctx *serveCtx) serve(
 	var traffic string
 	switch {
 	case onlyGRPC:
+		fmt.Printf("Serving only grpc?\n")
 		traffic = "grpc"
 	case onlyHTTP:
+		fmt.Printf("Serving only http?\n")
 		traffic = "http"
 	default:
+		fmt.Printf("Serving only both?\n")
 		traffic = "grpc+http"
 	}
 
