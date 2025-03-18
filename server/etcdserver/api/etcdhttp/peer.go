@@ -51,6 +51,7 @@ func newPeerHandler(
 	hashKVHandler http.Handler,
 	downgradeEnabledHandler http.Handler,
 ) http.Handler {
+	fmt.Printf("CREATING NEW PEER HANDLER\n")
 	if lg == nil {
 		lg = zap.NewNop()
 	}
