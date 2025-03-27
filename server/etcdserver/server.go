@@ -383,8 +383,10 @@ func NewServer(cfg config.ServerConfig) (srv *EtcdServer, err error) {
 	if IN_MEMORY_KV {
 		kv := mvcc.MemoryKV{}
 		srv.kv = &kv
+		fmt.Printf("Enabled in memory kv store!")
 	} else {
 		srv.kv = mvcc.New(srv.Logger(), srv.be, srv.lessor, mvccStoreConfig)
+		fmt.Printf("Enabled on disk kv store!")
 	}
 
 	srv.corruptionChecker = newCorruptionChecker(cfg.Logger, srv, srv.kv.HashStorage())
