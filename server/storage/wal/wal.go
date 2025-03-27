@@ -837,6 +837,8 @@ func (w *WAL) sync() error {
 		return nil
 	}
 
+	fmt.Printf("Is something syncing?\n")
+
 	start := time.Now()
 	err := fileutil.Fdatasync(w.tail().File)
 
