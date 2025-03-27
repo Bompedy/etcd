@@ -268,6 +268,8 @@ func (r *raftNode) start(rh *raftReadyHandler) {
 						r.lg.Fatal("failed to sync Raft snapshot", zap.Error(err))
 					}
 
+					fmt.Printf("Synced to disk!")
+
 					// etcdserver now claim the snapshot has been persisted onto the disk
 					notifyc <- struct{}{}
 
