@@ -285,7 +285,7 @@ func (r *raftNode) start(rh *raftReadyHandler) {
 				}
 
 				r.raftStorage.Append(rd.Entries)
-				fmt.Printf("Applied incoming Raft entries\n")
+				//fmt.Printf("Applied incoming Raft entries\n")
 
 				confChanged := false
 				for _, ent := range rd.CommittedEntries {
