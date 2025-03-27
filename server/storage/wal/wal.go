@@ -267,6 +267,7 @@ func (w *WAL) Reopen(lg *zap.Logger, snap walpb.Snapshot) (*WAL, error) {
 }
 
 func (w *WAL) SetUnsafeNoFsync() {
+	fmt.Printf("Disabling fsync!\n")
 	w.unsafeNoSync = true
 }
 
@@ -836,8 +837,6 @@ func (w *WAL) sync() error {
 	if w.unsafeNoSync {
 		return nil
 	}
-
-	fmt.Printf("Is something syncing?\n")
 
 	start := time.Now()
 	err := fileutil.Fdatasync(w.tail().File)
