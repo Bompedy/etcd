@@ -22,9 +22,11 @@ import (
 	"fmt"
 	"math"
 	"net/http"
+	"os"
 	"path"
 	"regexp"
 	"strconv"
+	"strings"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -206,6 +208,8 @@ type Server interface {
 	LeaderChangedNotify() <-chan struct{}
 }
 
+var IN_MEMORY_KV = strings.ToLower(os.Getenv("IN_MEMORY_KV")) == "true"
+
 // EtcdServer is the production implementation of the Server interface
 type EtcdServer struct {
 	// inflightSnapshots holds count the number of snapshots currently inflight.
@@ -375,7 +379,14 @@ func NewServer(cfg config.ServerConfig) (srv *EtcdServer, err error) {
 		CompactionBatchLimit:    cfg.CompactionBatchLimit,
 		CompactionSleepInterval: cfg.CompactionSleepInterval,
 	}
-	srv.kv = mvcc.New(srv.Logger(), srv.be, srv.lessor, mvccStoreConfig)
+
+	if IN_MEMORY_KV {
+		kv := mvcc.MemoryKV{}
+		srv.kv = &kv
+	} else {
+		srv.kv = mvcc.New(srv.Logger(), srv.be, srv.lessor, mvccStoreConfig)
+	}
+
 	srv.corruptionChecker = newCorruptionChecker(cfg.Logger, srv, srv.kv.HashStorage())
 
 	srv.authStore = auth.NewAuthStore(srv.Logger(), schema.NewAuthBackend(srv.Logger(), srv.be), tp, int(cfg.BcryptCost))
