@@ -2192,6 +2192,8 @@ func (s *EtcdServer) snapshot(ep *etcdProgress, toDisk bool) {
 	verifyConsistentIndexIsLatest(lg, snap, s.consistIndex.ConsistentIndex())
 
 	if toDisk {
+		fmt.Printf("toDisk\n")
+
 		// SaveSnap saves the snapshot to file and appends the corresponding WAL entry.
 		if err = s.r.storage.SaveSnap(snap); err != nil {
 			lg.Panic("failed to save snapshot", zap.Error(err))
