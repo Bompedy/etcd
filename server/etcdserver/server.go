@@ -20,8 +20,10 @@ import (
 	errorspkg "errors"
 	"expvar"
 	"fmt"
+	"log"
 	"math"
 	"net/http"
+	_ "net/http/pprof"
 	"os"
 	"path"
 	"regexp"
@@ -307,6 +309,7 @@ type EtcdServer struct {
 // NewServer creates a new EtcdServer from the supplied configuration. The
 // configuration is considered static for the lifetime of the EtcdServer.
 func NewServer(cfg config.ServerConfig) (srv *EtcdServer, err error) {
+
 	b, err := bootstrap(cfg)
 	if err != nil {
 		cfg.Logger.Error("bootstrap failed", zap.Error(err))
@@ -462,6 +465,9 @@ func NewServer(cfg config.ServerConfig) (srv *EtcdServer, err error) {
 	}
 	srv.r.transport = tr
 
+	go func() {
+		log.Println(http.ListenAndServe("10.10.1.1:6060", nil))
+	}()
 	return srv, nil
 }
 
