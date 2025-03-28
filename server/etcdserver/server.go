@@ -2010,23 +2010,23 @@ func (s *EtcdServer) applyEntryNormal(e *raftpb.Entry, shouldApplyV3 membership.
 		return
 	}
 
-	//lg := s.Logger()
-	//lg.Warn(
-	//	"message exceeded backend quota; raising alarm",
-	//	zap.Int64("quota-size-bytes", s.Cfg.QuotaBackendBytes),
-	//	zap.String("quota-size", humanize.Bytes(uint64(s.Cfg.QuotaBackendBytes))),
-	//	zap.Error(ar.Err),
-	//)
-	//
-	//s.GoAttach(func() {
-	//	a := &pb.AlarmRequest{
-	//		MemberID: uint64(s.MemberID()),
-	//		Action:   pb.AlarmRequest_ACTIVATE,
-	//		Alarm:    pb.AlarmType_NOSPACE,
-	//	}
-	//	s.raftRequest(s.ctx, pb.InternalRaftRequest{Alarm: a})
-	//	s.w.Trigger(id, ar)
-	//})
+	lg := s.Logger()
+	lg.Warn(
+		"message exceeded backend quota; raising alarm",
+		zap.Int64("quota-size-bytes", s.Cfg.QuotaBackendBytes),
+		zap.String("quota-size", humanize.Bytes(uint64(s.Cfg.QuotaBackendBytes))),
+		zap.Error(ar.Err),
+	)
+
+	s.GoAttach(func() {
+		a := &pb.AlarmRequest{
+			MemberID: uint64(s.MemberID()),
+			Action:   pb.AlarmRequest_ACTIVATE,
+			Alarm:    pb.AlarmType_NOSPACE,
+		}
+		s.raftRequest(s.ctx, pb.InternalRaftRequest{Alarm: a})
+		s.w.Trigger(id, ar)
+	})
 }
 
 func (s *EtcdServer) applyInternalRaftRequest(r *pb.InternalRaftRequest, shouldApplyV3 membership.ShouldApplyV3) *apply.Result {
