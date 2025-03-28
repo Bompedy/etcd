@@ -172,22 +172,22 @@ func (kv *MemoryKV) Range(ctx context.Context, key, end []byte, ro RangeOptions)
 	println("Range!")
 	var result RangeResult
 	result.Rev = 1
-	startValue, startExists := indexStore.Load(string(key))
-	endValue, endExists := indexStore.Load(string(end))
-	if endExists && startExists {
-		startIndex, ok1 := startValue.(int64)
-		endIndex, ok2 := endValue.(int64)
-		if !ok1 || !ok2 {
-			return &result, nil
-		}
-
-		for i := startIndex; i <= endIndex; i++ {
-			value, ok := memoryStore.Load(i)
-			if ok {
-				result.KVs = append(result.KVs, mvccpb.KeyValue{Key: []byte(value.(KeyValueStore).key), Value: value.(KeyValueStore).value})
-			}
-		}
-	}
+	//startValue, startExists := indexStore.Load(string(key))
+	//endValue, endExists := indexStore.Load(string(end))
+	//if endExists && startExists {
+	//	startIndex, ok1 := startValue.(int64)
+	//	endIndex, ok2 := endValue.(int64)
+	//	if !ok1 || !ok2 {
+	//		return &result, nil
+	//	}
+	//
+	//	for i := startIndex; i <= endIndex; i++ {
+	//		value, ok := memoryStore.Load(i)
+	//		if ok {
+	//			result.KVs = append(result.KVs, mvccpb.KeyValue{Key: []byte(value.(KeyValueStore).key), Value: value.(KeyValueStore).value})
+	//		}
+	//	}
+	//}
 
 	return &result, nil
 }
@@ -218,8 +218,8 @@ func (kv *MemoryKV) DeleteRange(key, end []byte) (n, rev int64) {
 
 func (kv *MemoryKV) Put(key, value []byte, lease lease.LeaseID) (rev int64) {
 	nextIndex := atomic.AddInt64(&storeIndex, 1)
-	memoryStore.Store(nextIndex, KeyValueStore{value, string(key)})
-	indexStore.Store(string(key), nextIndex)
+	//memoryStore.Store(nextIndex, KeyValueStore{value, string(key)})
+	//indexStore.Store(string(key), nextIndex)
 	return nextIndex
 }
 
