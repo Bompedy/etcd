@@ -2005,18 +2005,18 @@ func (s *EtcdServer) applyEntryNormal(e *raftpb.Entry, shouldApplyV3 membership.
 		return
 	}
 
-	if !errorspkg.Is(ar.Err, errors.ErrNoSpace) || len(s.alarmStore.Get(pb.AlarmType_NOSPACE)) > 0 {
-		s.w.Trigger(id, ar)
-		return
-	}
+	//if !errorspkg.Is(ar.Err, errors.ErrNoSpace) || len(s.alarmStore.Get(pb.AlarmType_NOSPACE)) > 0 {
+	//	s.w.Trigger(id, ar)
+	//	return
+	//}
 
-	lg := s.Logger()
-	lg.Warn(
-		"message exceeded backend quota; raising alarm",
-		zap.Int64("quota-size-bytes", s.Cfg.QuotaBackendBytes),
-		zap.String("quota-size", humanize.Bytes(uint64(s.Cfg.QuotaBackendBytes))),
-		zap.Error(ar.Err),
-	)
+	//lg := s.Logger()
+	//lg.Warn(
+	//	"message exceeded backend quota; raising alarm",
+	//	zap.Int64("quota-size-bytes", s.Cfg.QuotaBackendBytes),
+	//	zap.String("quota-size", humanize.Bytes(uint64(s.Cfg.QuotaBackendBytes))),
+	//	zap.Error(ar.Err),
+	//)
 	//
 	//s.GoAttach(func() {
 	//	a := &pb.AlarmRequest{
