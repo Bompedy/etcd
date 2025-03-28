@@ -1912,7 +1912,7 @@ func (s *EtcdServer) apply(
 		switch e.Type {
 		case raftpb.EntryNormal:
 			// gofail: var beforeApplyOneEntryNormal struct{}
-			//s.applyEntryNormal(&e, shouldApplyV3)
+			s.applyEntryNormal(&e, shouldApplyV3)
 			s.setAppliedIndex(e.Index)
 			s.setTerm(e.Term)
 
