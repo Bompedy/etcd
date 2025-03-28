@@ -1993,7 +1993,6 @@ func (s *EtcdServer) applyEntryNormal(e *raftpb.Entry, shouldApplyV3 membership.
 		if !needResult && raftReq.Txn != nil {
 			removeNeedlessRangeReqs(raftReq.Txn)
 		}
-		fmt.Printf("Applying internal raft request normamly")
 		ar = s.applyInternalRaftRequest(&raftReq, shouldApplyV3)
 	}
 
