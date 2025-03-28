@@ -243,13 +243,13 @@ func (r *raftNode) start(rh *raftReadyHandler) {
 				// Must save the snapshot file and WAL snapshot entry before saving any other entries or hardstate to
 				// ensure that recovery after a snapshot restore is possible.
 
-				if !raft.IsEmptySnap(rd.Snapshot) {
-					// gofail: var raftBeforeSaveSnap struct{}
-					if err := r.storage.SaveSnap(rd.Snapshot); err != nil {
-						r.lg.Fatal("failed to save Raft snapshot", zap.Error(err))
-					}
-					// gofail: var raftAfterSaveSnap struct{}
-				}
+				//if !raft.IsEmptySnap(rd.Snapshot) {
+				//	// gofail: var raftBeforeSaveSnap struct{}
+				//	if err := r.storage.SaveSnap(rd.Snapshot); err != nil {
+				//		r.lg.Fatal("failed to save Raft snapshot", zap.Error(err))
+				//	}
+				//	// gofail: var raftAfterSaveSnap struct{}
+				//}
 
 				// gofail: var raftBeforeSave struct{}
 				if err := r.storage.Save(rd.HardState, rd.Entries); err != nil {
