@@ -296,39 +296,40 @@ func (r *raftNode) start(rh *raftReadyHandler) {
 					}
 				}
 
-				if !islead {
-					// finish processing incoming messages before we signal notifyc chan
-					msgs := r.processMessages(rd.Messages)
+				//if !islead {
+				//	// finish processing incoming messages before we signal notifyc chan
+				//	msgs := r.processMessages(rd.Messages)
+				//
+				//	// now unblocks 'applyAll' that waits on Raft log disk writes before triggering snapshots
+				//	notifyc <- struct{}{}
+				//
+				//	// Candidate or follower needs to wait for all pending configuration
+				//	// changes to be applied before sending messages.
+				//	// Otherwise we might incorrectly count votes (e.g. votes from removed members).
+				//	// Also slow machine's follower raft-layer could proceed to become the leader
+				//	// on its own single-node cluster, before toApply-layer applies the config change.
+				//	// We simply wait for ALL pending entries to be applied for now.
+				//	// We might improve this later on if it causes unnecessary long blocking issues.
+				//
+				//	if confChanged {
+				//		// blocks until 'applyAll' calls 'applyWait.Trigger'
+				//		// to be in sync with scheduled config-change job
+				//		// (assume notifyc has cap of 1)
+				//		select {
+				//		case notifyc <- struct{}{}:
+				//		case <-r.stopped:
+				//			return
+				//		}
+				//	}
+				//
+				//	// gofail: var raftBeforeFollowerSend struct{}
+				//	r.transport.Send(msgs)
+				//} else {
+				//	// leader already processed 'MsgSnap' and signaled
+				//	notifyc <- struct{}{}
+				//}
 
-					// now unblocks 'applyAll' that waits on Raft log disk writes before triggering snapshots
-					notifyc <- struct{}{}
-
-					// Candidate or follower needs to wait for all pending configuration
-					// changes to be applied before sending messages.
-					// Otherwise we might incorrectly count votes (e.g. votes from removed members).
-					// Also slow machine's follower raft-layer could proceed to become the leader
-					// on its own single-node cluster, before toApply-layer applies the config change.
-					// We simply wait for ALL pending entries to be applied for now.
-					// We might improve this later on if it causes unnecessary long blocking issues.
-
-					if confChanged {
-						// blocks until 'applyAll' calls 'applyWait.Trigger'
-						// to be in sync with scheduled config-change job
-						// (assume notifyc has cap of 1)
-						select {
-						case notifyc <- struct{}{}:
-						case <-r.stopped:
-							return
-						}
-					}
-
-					// gofail: var raftBeforeFollowerSend struct{}
-					r.transport.Send(msgs)
-				} else {
-					// leader already processed 'MsgSnap' and signaled
-					notifyc <- struct{}{}
-				}
-
+				notifyc <- struct{}{}
 				// gofail: var raftBeforeAdvance struct{}
 				r.Advance()
 
