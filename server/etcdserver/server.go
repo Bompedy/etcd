@@ -2005,10 +2005,10 @@ func (s *EtcdServer) applyEntryNormal(e *raftpb.Entry, shouldApplyV3 membership.
 		return
 	}
 
-	//if !errorspkg.Is(ar.Err, errors.ErrNoSpace) || len(s.alarmStore.Get(pb.AlarmType_NOSPACE)) > 0 {
-	//	s.w.Trigger(id, ar)
-	//	return
-	//}
+	if !errorspkg.Is(ar.Err, errors.ErrNoSpace) || len(s.alarmStore.Get(pb.AlarmType_NOSPACE)) > 0 {
+		s.w.Trigger(id, ar)
+		return
+	}
 
 	//lg := s.Logger()
 	//lg.Warn(
