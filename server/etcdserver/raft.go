@@ -252,12 +252,12 @@ func (r *raftNode) start(rh *raftReadyHandler) {
 				//}
 
 				// gofail: var raftBeforeSave struct{}
-				if err := r.storage.Save(rd.HardState, rd.Entries); err != nil {
-					r.lg.Fatal("failed to save Raft hard state and entries", zap.Error(err))
-				}
-				if !raft.IsEmptyHardState(rd.HardState) {
-					proposalsCommitted.Set(float64(rd.HardState.Commit))
-				}
+				//if err := r.storage.Save(rd.HardState, rd.Entries); err != nil {
+				//	r.lg.Fatal("failed to save Raft hard state and entries", zap.Error(err))
+				//}
+				//if !raft.IsEmptyHardState(rd.HardState) {
+				//	proposalsCommitted.Set(float64(rd.HardState.Commit))
+				//}
 				// gofail: var raftAfterSave struct{}
 
 				if !raft.IsEmptySnap(rd.Snapshot) {
