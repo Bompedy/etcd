@@ -1004,7 +1004,7 @@ func (s *EtcdServer) applyAll(ep *etcdProgress, apply *toApply) {
 	// wait for the raft routine to finish the disk writes before triggering a
 	// snapshot. or applied index might be greater than the last index in raft
 	// storage, since the raft routine might be slower than toApply routine.
-	//<-apply.notifyc
+	<-apply.notifyc
 
 	s.snapshotIfNeededAndCompactRaftLog(ep)
 	select {
@@ -1889,7 +1889,7 @@ func (s *EtcdServer) apply(
 	confState *raftpb.ConfState,
 	raftAdvancedC <-chan struct{},
 ) (appliedt uint64, appliedi uint64, shouldStop bool) {
-	fmt.Printf("Applying entry?\n")
+	//fmt.Printf("Applying entry?\n")
 	s.lg.Debug("Applying entries", zap.Int("num-entries", len(es)))
 	for i := range es {
 		e := es[i]
