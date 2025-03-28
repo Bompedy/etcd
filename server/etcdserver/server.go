@@ -1993,6 +1993,7 @@ func (s *EtcdServer) applyEntryNormal(e *raftpb.Entry, shouldApplyV3 membership.
 		if !needResult && raftReq.Txn != nil {
 			removeNeedlessRangeReqs(raftReq.Txn)
 		}
+		fmt.Printf("Applying internal raft request normamly")
 		ar = s.applyInternalRaftRequest(&raftReq, shouldApplyV3)
 	}
 
@@ -2017,16 +2018,16 @@ func (s *EtcdServer) applyEntryNormal(e *raftpb.Entry, shouldApplyV3 membership.
 		zap.String("quota-size", humanize.Bytes(uint64(s.Cfg.QuotaBackendBytes))),
 		zap.Error(ar.Err),
 	)
-
-	s.GoAttach(func() {
-		a := &pb.AlarmRequest{
-			MemberID: uint64(s.MemberID()),
-			Action:   pb.AlarmRequest_ACTIVATE,
-			Alarm:    pb.AlarmType_NOSPACE,
-		}
-		s.raftRequest(s.ctx, pb.InternalRaftRequest{Alarm: a})
-		s.w.Trigger(id, ar)
-	})
+	//
+	//s.GoAttach(func() {
+	//	a := &pb.AlarmRequest{
+	//		MemberID: uint64(s.MemberID()),
+	//		Action:   pb.AlarmRequest_ACTIVATE,
+	//		Alarm:    pb.AlarmType_NOSPACE,
+	//	}
+	//	s.raftRequest(s.ctx, pb.InternalRaftRequest{Alarm: a})
+	//	s.w.Trigger(id, ar)
+	//})
 }
 
 func (s *EtcdServer) applyInternalRaftRequest(r *pb.InternalRaftRequest, shouldApplyV3 membership.ShouldApplyV3) *apply.Result {
