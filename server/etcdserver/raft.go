@@ -285,7 +285,7 @@ func (r *raftNode) start(rh *raftReadyHandler) {
 				//	// gofail: var raftAfterWALRelease struct{}
 				//}
 
-				//r.raftStorage.Append(rd.Entries)
+				r.raftStorage.Append(rd.Entries)
 				//fmt.Printf("Applied incoming Raft entries\n")
 
 				confChanged := false
