@@ -994,7 +994,7 @@ func (s *EtcdServer) Cleanup() {
 }
 
 func (s *EtcdServer) applyAll(ep *etcdProgress, apply *toApply) {
-	s.applySnapshot(ep, apply)
+	//s.applySnapshot(ep, apply)
 	s.applyEntries(ep, apply)
 	backend.VerifyBackendConsistency(s.Backend(), s.Logger(), true, schema.AllBuckets...)
 
