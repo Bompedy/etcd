@@ -226,11 +226,11 @@ func (r *raftNode) start(rh *raftReadyHandler) {
 
 				updateCommittedIndex(&ap, rh)
 
-				//select {
-				//case r.applyc <- ap:
-				//case <-r.stopped:
-				//	return
-				//}
+				select {
+				case r.applyc <- ap:
+				case <-r.stopped:
+					return
+				}
 
 				// the leader can write to its disk in parallel with replicating to the followers and then
 				// writing to their disks.
