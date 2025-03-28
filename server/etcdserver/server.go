@@ -1844,7 +1844,7 @@ func (s *EtcdServer) publishV3(timeout time.Duration) {
 func (s *EtcdServer) sendMergedSnap(merged snap.Message) {
 	atomic.AddInt64(&s.inflightSnapshots, 1)
 
-	fmt.Printf("Sending merged snap!")
+	fmt.Printf("Sending merged snap!\n")
 	lg := s.Logger()
 	fields := []zap.Field{
 		zap.String("from", s.MemberID().String()),
