@@ -933,6 +933,7 @@ func (w *WAL) Close() error {
 }
 
 func (w *WAL) saveEntry(e *raftpb.Entry) error {
+	fmt.Printf("Saving entry to wal?\n")
 	// TODO: add MustMarshalTo to reduce one allocation.
 	b := pbutil.MustMarshal(e)
 	rec := &walpb.Record{Type: EntryType, Data: b}
