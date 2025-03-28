@@ -560,7 +560,7 @@ func bootstrapWALFromSnapshot(cfg config.ServerConfig, snapshot *raftpb.Snapshot
 		ents:     ents,
 		snapshot: snap,
 		meta:     meta,
-		haveWAL:  false,
+		haveWAL:  true,
 	}
 
 	if cfg.ForceNewCluster {
