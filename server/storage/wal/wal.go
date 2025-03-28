@@ -955,6 +955,7 @@ func (w *WAL) saveState(s *raftpb.HardState) error {
 }
 
 func (w *WAL) Save(st raftpb.HardState, ents []raftpb.Entry) error {
+	fmt.Printf("Saving entries to wal?\n")
 	w.mu.Lock()
 	defer w.mu.Unlock()
 
