@@ -594,6 +594,7 @@ func (w *WAL) ReadAll() (metadata []byte, state raftpb.HardState, ents []raftpb.
 // ValidSnapshotEntries returns all the valid snapshot entries in the wal logs in the given directory.
 // Snapshot entries are valid if their index is less than or equal to the most recent committed hardstate.
 func ValidSnapshotEntries(lg *zap.Logger, walDir string) ([]walpb.Snapshot, error) {
+	fmt.Printf("Validate snap entries?\n")
 	var snaps []walpb.Snapshot
 	var state raftpb.HardState
 	var err error
@@ -663,6 +664,7 @@ func ValidSnapshotEntries(lg *zap.Logger, walDir string) ([]walpb.Snapshot, erro
 // If the loaded snap doesn't match with the expected one, it will
 // return error ErrSnapshotMismatch.
 func Verify(lg *zap.Logger, walDir string, snap walpb.Snapshot) (*raftpb.HardState, error) {
+	fmt.Printf("Verify reads?\n")
 	var metadata []byte
 	var err error
 	var match bool
@@ -828,6 +830,7 @@ func (w *WAL) cut() error {
 }
 
 func (w *WAL) sync() error {
+	fmt.Printf("Syncing encoder?\n")
 	if w.encoder != nil {
 		if err := w.encoder.flush(); err != nil {
 			return err
@@ -863,6 +866,7 @@ func (w *WAL) Sync() error {
 // For example, if WAL is holding lock 1,2,3,4,5,6, ReleaseLockTo(4) will release
 // lock 1,2 but keep 3. ReleaseLockTo(5) will release 1,2,3 but keep 4.
 func (w *WAL) ReleaseLockTo(index uint64) error {
+	fmt.Printf("Releasing lock to?\n")
 	w.mu.Lock()
 	defer w.mu.Unlock()
 
@@ -945,6 +949,7 @@ func (w *WAL) saveEntry(e *raftpb.Entry) error {
 }
 
 func (w *WAL) saveState(s *raftpb.HardState) error {
+	fmt.Printf("Saving HardState to wal?\n")
 	if raft.IsEmptyHardState(*s) {
 		return nil
 	}
