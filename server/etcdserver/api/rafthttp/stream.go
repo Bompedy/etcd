@@ -201,11 +201,11 @@ func (cw *streamWriter) run() {
 
 		case m := <-msgc:
 			err := enc.encode(&m)
-			if len(m.Entries) > 0 {
-				for i := range m.Entries {
-					fmt.Printf("Encoding message: %s bytes - %s\n", m.Type.String(), string(m.Entries[i].Data))
-				}
-			}
+			//if len(m.Entries) > 0 {
+			//	for i := range m.Entries {
+			//		fmt.Printf("Encoding message: %s bytes - %s\n", m.Type.String(), string(m.Entries[i].Data))
+			//	}
+			//}
 			if err == nil {
 				unflushed += m.Size()
 
@@ -502,16 +502,16 @@ func (cr *streamReader) decodeLoop(rc io.ReadCloser, t streamType) error {
 			return err
 		}
 
-		if m.Type == raftpb.MsgApp {
-			for i := range m.Entries {
-				fmt.Printf("Received message %d: %s\n", m.Index, string(m.Entries[i].Data))
-			}
-		} else if m.Type == raftpb.MsgAppResp {
-			fmt.Printf("Got a response for: %d\n", m.Index)
-			for i := range m.Entries {
-				fmt.Printf("Received response for message: %s\n", string(m.Entries[i].Data))
-			}
-		}
+		//if m.Type == raftpb.MsgApp {
+		//	for i := range m.Entries {
+		//		fmt.Printf("Received message %d: %s\n", m.Index, string(m.Entries[i].Data))
+		//	}
+		//} else if m.Type == raftpb.MsgAppResp {
+		//	fmt.Printf("Got a response for: %d\n", m.Index)
+		//	for i := range m.Entries {
+		//		fmt.Printf("Received response for message: %s\n", string(m.Entries[i].Data))
+		//	}
+		//}
 
 		// gofail-go: var raftDropHeartbeat struct{}
 		// continue labelRaftDropHeartbeat
