@@ -16,13 +16,11 @@ package mvcc
 
 import (
 	"context"
-	"sync"
-	"sync/atomic"
-
 	"go.etcd.io/etcd/api/v3/mvccpb"
 	"go.etcd.io/etcd/pkg/v3/traceutil"
 	"go.etcd.io/etcd/server/v3/lease"
 	"go.etcd.io/etcd/server/v3/storage/backend"
+	"sync"
 )
 
 type RangeOptions struct {
@@ -153,8 +151,6 @@ type KeyValueStore struct {
 	key   string
 }
 
-var storeIndex = int64(0)
-var indexStore = sync.Map{}
 var memoryStore = sync.Map{}
 
 type MemoryKV struct {
@@ -165,62 +161,33 @@ func (kv *MemoryKV) FirstRev() int64 {
 }
 
 func (kv *MemoryKV) Rev() int64 {
-	return atomic.LoadInt64(&storeIndex)
+	return 1
 }
 
 func (kv *MemoryKV) Range(ctx context.Context, key, end []byte, ro RangeOptions) (*RangeResult, error) {
-	println("Range!")
+	//println("Range!")
 	var result RangeResult
 	result.Rev = 1
-	startValue, startExists := indexStore.Load(string(key))
-	endValue, endExists := indexStore.Load(string(end))
-	if endExists && startExists {
-		startIndex, ok1 := startValue.(int64)
-		endIndex, ok2 := endValue.(int64)
-		if !ok1 || !ok2 {
-			return &result, nil
-		}
-
-		for i := startIndex; i <= endIndex; i++ {
-			value, ok := memoryStore.Load(i)
-			if ok {
-				result.KVs = append(result.KVs, mvccpb.KeyValue{Key: []byte(value.(KeyValueStore).key), Value: value.(KeyValueStore).value})
-			}
-		}
+	value, ok := memoryStore.Load(string(key))
+	if ok && value != nil {
+		result.KVs = append(result.KVs, mvccpb.KeyValue{Key: key, Value: value.([]byte)})
 	}
 
 	return &result, nil
 }
 
 func (kv *MemoryKV) DeleteRange(key, end []byte) (n, rev int64) {
-	println("Deleting!")
-	deleted := int64(0)
-	startValue, startExists := indexStore.Load(string(key))
-	endValue, endExists := indexStore.Load(string(end))
-	if endExists && startExists {
-		startIndex, ok1 := startValue.(int64)
-		endIndex, ok2 := endValue.(int64)
-		if !ok1 || !ok2 {
-			return deleted, 1
-		}
-
-		for i := startIndex; i <= endIndex; i++ {
-			value, ok := memoryStore.LoadAndDelete(i)
-			if ok {
-				indexStore.Delete(value.(KeyValueStore).key)
-				deleted++
-			}
-		}
+	_, ok := memoryStore.LoadAndDelete(string(key))
+	if !ok {
+		return 0, 1
+	} else {
+		return 1, 1
 	}
-
-	return deleted, 1
 }
 
 func (kv *MemoryKV) Put(key, value []byte, lease lease.LeaseID) (rev int64) {
-	nextIndex := atomic.AddInt64(&storeIndex, 1)
-	memoryStore.Store(nextIndex, KeyValueStore{value, string(key)})
-	indexStore.Store(string(key), nextIndex)
-	return nextIndex
+	memoryStore.Store(string(key), value)
+	return 1
 }
 
 func (kv *MemoryKV) Read(mode ReadTxMode, trace *traceutil.Trace) TxnRead {
