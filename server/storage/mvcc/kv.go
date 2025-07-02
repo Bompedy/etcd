@@ -16,7 +16,6 @@ package mvcc
 
 import (
 	"context"
-	"fmt"
 	"go.etcd.io/etcd/api/v3/mvccpb"
 	"go.etcd.io/etcd/pkg/v3/traceutil"
 	"go.etcd.io/etcd/server/v3/lease"
@@ -170,9 +169,9 @@ func (kv *MemoryKV) Range(ctx context.Context, key, end []byte, ro RangeOptions)
 	var result RangeResult
 	result.Rev = 1
 	value, ok := memoryStore.Load(string(key))
-	fmt.Printf("Read key: %d")
+	//fmt.Printf("Read key: %d")
 	if ok && value != nil {
-		fmt.Printf("Read key: %d value: %s\n", key, string(value.([]byte)))
+		//fmt.Printf("Read key: %d value: %s\n", key, string(value.([]byte)))
 		result.KVs = append(result.KVs, mvccpb.KeyValue{Key: key, Value: value.([]byte)})
 	}
 
@@ -189,7 +188,7 @@ func (kv *MemoryKV) DeleteRange(key, end []byte) (n, rev int64) {
 }
 
 func (kv *MemoryKV) Put(key, value []byte, lease lease.LeaseID) (rev int64) {
-	fmt.Printf("Put key: %d value: %s\n", key, string(value))
+	//fmt.Printf("Put key: %d value: %s\n", key, string(value))
 	memoryStore.Store(string(key), value)
 	return 1
 }
