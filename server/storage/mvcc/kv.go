@@ -170,6 +170,7 @@ func (kv *MemoryKV) Range(ctx context.Context, key, end []byte, ro RangeOptions)
 	var result RangeResult
 	result.Rev = 1
 	value, ok := memoryStore.Load(string(key))
+	fmt.Printf("Read key: %d")
 	if ok && value != nil {
 		fmt.Printf("Read key: %d value: %s\n", key, string(value.([]byte)))
 		result.KVs = append(result.KVs, mvccpb.KeyValue{Key: key, Value: value.([]byte)})
