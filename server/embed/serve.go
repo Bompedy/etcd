@@ -214,7 +214,6 @@ func (sctx *serveCtx) serve(
 			})
 
 			if grpcEnabled {
-				fmt.Printf("Grpc enabled!")
 				grpcl := m.Match(cmux.HTTP2())
 				sctx.startHandler(errHandler, func() error {
 					return gs.Serve(grpcl)
