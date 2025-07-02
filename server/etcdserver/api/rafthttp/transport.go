@@ -16,7 +16,6 @@ package rafthttp
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 	"sync"
 	"time"
