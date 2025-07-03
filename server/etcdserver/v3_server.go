@@ -795,6 +795,7 @@ func (s *EtcdServer) processInternalRaftRequestOnce(ctx context.Context, r pb.In
 	err = s.r.Propose(cctx, data)
 	if err != nil {
 		proposalsFailed.Inc()
+		fmt.Printf("Proposal failed!\n")
 		s.w.Trigger(id, nil) // GC wait
 		return nil, err
 	}
@@ -807,6 +808,7 @@ func (s *EtcdServer) processInternalRaftRequestOnce(ctx context.Context, r pb.In
 		return x.(*apply2.Result), nil
 	case <-cctx.Done():
 		proposalsFailed.Inc()
+		fmt.Printf("proposal failed: %d\n", id)
 		s.w.Trigger(id, nil) // GC wait
 		return nil, s.parseProposeCtxErr(cctx.Err(), start)
 	case <-s.done:
