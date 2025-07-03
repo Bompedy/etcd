@@ -1222,7 +1222,7 @@ func (s *EtcdServer) snapshotIfNeededAndCompactRaftLog(ep *etcdProgress) {
 	if !shouldSnapshotToDisk && !shouldSnapshotToMemory {
 		return
 	}
-	fmt.Printf("Snapshotting?\n")
+	fmt.Printf("Snapshotting: %v?\n", shouldSnapshotToDisk)
 	s.snapshot(ep, shouldSnapshotToDisk)
 	s.compactRaftLog(ep.appliedi)
 }
