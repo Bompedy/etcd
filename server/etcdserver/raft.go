@@ -142,7 +142,7 @@ func newRaftNode(cfg raftNodeConfig) *raftNode {
 		td:         contention.NewTimeoutDetector(2 * cfg.heartbeat),
 		readStateC: make(chan raft.ReadState, 1),
 		msgSnapC:   make(chan raftpb.Message, maxInFlightMsgSnap),
-		applyc:     make(chan toApply),
+		applyc:     make(chan toApply, 1000000),
 		stopped:    make(chan struct{}),
 		done:       make(chan struct{}),
 	}

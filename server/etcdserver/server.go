@@ -857,18 +857,27 @@ func (s *EtcdServer) run() {
 		close(s.done)
 	}()
 
-	var expiredLeaseC <-chan []*lease.Lease
-	if s.lessor != nil {
-		expiredLeaseC = s.lessor.ExpiredLeasesC()
-	}
+	//var expiredLeaseC <-chan []*lease.Lease
+	//if s.lessor != nil {
+	//	expiredLeaseC = s.lessor.ExpiredLeasesC()
+	//}
+
+	testJobs := make(chan *toApply, 1000000)
+
+	go func() {
+		for ap := range testJobs {
+			s.applyAll(&ep, ap)
+		}
+	}()
 
 	for {
 		select {
 		case ap := <-s.r.apply():
-			f := schedule.NewJob("server_applyAll", func(context.Context) { s.applyAll(&ep, &ap) })
-			sched.Schedule(f)
-		case leases := <-expiredLeaseC:
-			s.revokeExpiredLeases(leases)
+			testJobs <- &ap
+			//f := schedule.NewJob("server_applyAll", func(context.Context) { s.applyAll(&ep, &ap) })
+			//sched.Schedule(f)
+		//case leases := <-expiredLeaseC:
+		//s.revokeExpiredLeases(leases)
 		case err := <-s.errorc:
 			lg.Warn("server error", zap.Error(err))
 			lg.Warn("data-dir used by this member must be removed")
