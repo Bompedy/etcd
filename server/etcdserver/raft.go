@@ -142,7 +142,7 @@ func newRaftNode(cfg raftNodeConfig) *raftNode {
 		td:         contention.NewTimeoutDetector(2 * cfg.heartbeat),
 		readStateC: make(chan raft.ReadState, 1),
 		msgSnapC:   make(chan raftpb.Message, maxInFlightMsgSnap),
-		applyc:     make(chan toApply, 1000000),
+		applyc:     make(chan toApply),
 		stopped:    make(chan struct{}),
 		done:       make(chan struct{}),
 	}
@@ -264,6 +264,7 @@ func (r *raftNode) start(rh *raftReadyHandler) {
 					// old data from the WAL. Otherwise could get an error like:
 					// panic: tocommit(107) is out of range [lastIndex(84)]. Was the raft log corrupted, truncated, or lost?
 					// See https://github.com/etcd-io/etcd/issues/10219 for more details.
+					fmt.Printf("Sync snapshot!")
 					if err := r.storage.Sync(); err != nil {
 						r.lg.Fatal("failed to sync Raft snapshot", zap.Error(err))
 					}
