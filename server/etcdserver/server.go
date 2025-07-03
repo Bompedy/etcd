@@ -354,7 +354,7 @@ func startProfiling() {
 // NewServer creates a new EtcdServer from the supplied configuration. The
 // configuration is considered static for the lifetime of the EtcdServer.
 func NewServer(cfg config.ServerConfig) (srv *EtcdServer, err error) {
-	startProfiling()
+	//startProfiling()
 	b, err := bootstrap(cfg)
 	if err != nil {
 		cfg.Logger.Error("bootstrap failed", zap.Error(err))
@@ -905,27 +905,18 @@ func (s *EtcdServer) run() {
 		close(s.done)
 	}()
 
-	//var expiredLeaseC <-chan []*lease.Lease
-	//if s.lessor != nil {
-	//	expiredLeaseC = s.lessor.ExpiredLeasesC()
-	//}
-
-	testJobs := make(chan *toApply, 1000000)
-
-	go func() {
-		for ap := range testJobs {
-			s.applyAll(&ep, ap)
-		}
-	}()
+	var expiredLeaseC <-chan []*lease.Lease
+	if s.lessor != nil {
+		expiredLeaseC = s.lessor.ExpiredLeasesC()
+	}
 
 	for {
 		select {
 		case ap := <-s.r.apply():
-			testJobs <- &ap
-			//f := schedule.NewJob("server_applyAll", func(context.Context) { s.applyAll(&ep, &ap) })
-			//sched.Schedule(f)
-		//case leases := <-expiredLeaseC:
-		//s.revokeExpiredLeases(leases)
+			f := schedule.NewJob("server_applyAll", func(context.Context) { s.applyAll(&ep, &ap) })
+			sched.Schedule(f)
+		case leases := <-expiredLeaseC:
+			s.revokeExpiredLeases(leases)
 		case err := <-s.errorc:
 			lg.Warn("server error", zap.Error(err))
 			lg.Warn("data-dir used by this member must be removed")
@@ -2077,6 +2068,7 @@ func (s *EtcdServer) applyEntryNormal(e *raftpb.Entry, shouldApplyV3 membership.
 			Alarm:    pb.AlarmType_NOSPACE,
 		}
 		s.raftRequest(s.ctx, pb.InternalRaftRequest{Alarm: a})
+		fmt.Printf("Triggering id: %d\n", id)
 		s.w.Trigger(id, ar)
 	})
 }
