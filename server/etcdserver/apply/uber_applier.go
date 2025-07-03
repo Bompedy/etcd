@@ -16,6 +16,7 @@ package apply
 
 import (
 	"errors"
+	"fmt"
 	"time"
 
 	"go.uber.org/zap"
@@ -139,6 +140,7 @@ func (a *uberApplier) dispatch(r *pb.InternalRaftRequest) *Result {
 		ar.Resp, ar.Trace, ar.Err = a.applyV3.Range(r.Range)
 	case r.Put != nil:
 		op = "Put"
+		fmt.Printf("Putting here?\n")
 		ar.Resp, ar.Trace, ar.Err = a.applyV3.Put(r.Put)
 	case r.DeleteRange != nil:
 		op = "DeleteRange"
