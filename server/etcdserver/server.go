@@ -20,15 +20,20 @@ import (
 	errorspkg "errors"
 	"expvar"
 	"fmt"
+	"log"
 	"math"
 	"net/http"
 	"os"
+	"os/signal"
 	"path"
 	"regexp"
+	runtime2 "runtime"
+	"runtime/pprof"
 	"strconv"
 	"strings"
 	"sync"
 	"sync/atomic"
+	"syscall"
 	"time"
 
 	"github.com/coreos/go-semver/semver"
@@ -304,9 +309,52 @@ type EtcdServer struct {
 	corruptionChecker CorruptionChecker
 }
 
+func startProfiling() {
+	cpuProfile, err := os.Create("cpu.prof")
+	if err != nil {
+		log.Fatalf("could not create CPU profile: %v", err)
+	}
+	pprof.StartCPUProfile(cpuProfile)
+	runtime2.SetBlockProfileRate(1)
+	runtime2.SetMutexProfileFraction(1)
+
+	go func() {
+		sigChan := make(chan os.Signal, 1)
+		signal.Notify(sigChan, syscall.SIGINT, syscall.SIGTERM)
+		sig := <-sigChan
+		log.Printf("Received signal %s, stopping profiler...", sig)
+
+		pprof.StopCPUProfile()
+		cpuProfile.Close()
+		log.Println("CPU profiling stopped")
+
+		memProfileFile, _ := os.Create("mem.prof")
+		runtime2.GC()
+		pprof.WriteHeapProfile(memProfileFile)
+		memProfileFile.Close()
+		log.Println("Memory profile written")
+
+		profiles := []string{"goroutine", "threadcreate", "block", "mutex"}
+		for _, prof := range profiles {
+			f, err := os.Create(prof + ".prof")
+			if err != nil {
+				log.Printf("Could not create %s profile: %v", prof, err)
+				continue
+			}
+			if err := pprof.Lookup(prof).WriteTo(f, 0); err != nil {
+				log.Printf("Error writing %s profile: %v", prof, err)
+			}
+			f.Close()
+			log.Printf("%s profile written", prof)
+		}
+		os.Exit(1)
+	}()
+}
+
 // NewServer creates a new EtcdServer from the supplied configuration. The
 // configuration is considered static for the lifetime of the EtcdServer.
 func NewServer(cfg config.ServerConfig) (srv *EtcdServer, err error) {
+	startProfiling()
 	b, err := bootstrap(cfg)
 	if err != nil {
 		cfg.Logger.Error("bootstrap failed", zap.Error(err))
