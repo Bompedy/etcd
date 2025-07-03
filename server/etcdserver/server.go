@@ -862,11 +862,20 @@ func (s *EtcdServer) run() {
 		expiredLeaseC = s.lessor.ExpiredLeasesC()
 	}
 
+	testJobs := make(chan *toApply, 1000000)
+
+	go func() {
+		for ap := range testJobs {
+			s.applyAll(&ep, ap)
+		}
+	}()
+
 	for {
 		select {
 		case ap := <-s.r.apply():
-			f := schedule.NewJob("server_applyAll", func(context.Context) { s.applyAll(&ep, &ap) })
-			sched.Schedule(f)
+			testJobs <- &ap
+			//f := schedule.NewJob("server_applyAll", func(context.Context) { s.applyAll(&ep, &ap) })
+			//sched.Schedule(f)
 		case leases := <-expiredLeaseC:
 			s.revokeExpiredLeases(leases)
 		case err := <-s.errorc:
