@@ -1014,6 +1014,8 @@ func (s *EtcdServer) applySnapshot(ep *etcdProgress, toApply *toApply) {
 	if raft.IsEmptySnap(toApply.snapshot) {
 		return
 	}
+
+	fmt.Printf("Applying a snapshot?\n")
 	applySnapshotInProgress.Inc()
 
 	lg := s.Logger()
