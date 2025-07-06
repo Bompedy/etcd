@@ -2049,7 +2049,7 @@ func (s *EtcdServer) applyEntryNormal(e *raftpb.Entry, shouldApplyV3 membership.
 	}
 
 	if !errorspkg.Is(ar.Err, errors.ErrNoSpace) || len(s.alarmStore.Get(pb.AlarmType_NOSPACE)) > 0 {
-		fmt.Printf("Triggering ids: %d\n", id)
+		//fmt.Printf("Triggering ids: %d\n", id)
 		s.w.Trigger(id, ar)
 		return
 	}

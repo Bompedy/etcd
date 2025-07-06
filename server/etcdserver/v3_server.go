@@ -804,7 +804,7 @@ func (s *EtcdServer) processInternalRaftRequestOnce(ctx context.Context, r pb.In
 
 	select {
 	case x := <-ch:
-		fmt.Printf("Got apply result for: %d\n", id)
+		//fmt.Printf("Got apply result for: %d\n", id)
 		return x.(*apply2.Result), nil
 	case <-cctx.Done():
 		proposalsFailed.Inc()
