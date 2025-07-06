@@ -2079,7 +2079,7 @@ func (s *EtcdServer) applyInternalRaftRequest(r *pb.InternalRaftRequest, shouldA
 		if !shouldApplyV3 {
 			return nil
 		}
-		fmt.Printf("uber applying!\n")
+		//fmt.Printf("uber applying!\n")
 		return s.uberApply.Apply(r)
 	}
 	membershipApplier := apply.NewApplierMembership(s.lg, s.cluster, s)
