@@ -2069,7 +2069,7 @@ func (s *EtcdServer) applyEntryNormal(e *raftpb.Entry, shouldApplyV3 membership.
 			Alarm:    pb.AlarmType_NOSPACE,
 		}
 		s.raftRequest(s.ctx, pb.InternalRaftRequest{Alarm: a})
-		fmt.Printf("Triggering id: %d\n", id)
+		//fmt.Printf("Triggering id: %d\n", id)
 		s.w.Trigger(id, ar)
 	})
 }
