@@ -200,8 +200,6 @@ func newBackend(bcfg BackendConfig) *backend {
 	bopts.Mlock = bcfg.Mlock
 	bopts.Logger = newBoltLoggerZap(bcfg)
 
-	fmt.Printf("Bolt options: %v\n", bopts)
-
 	db, err := bolt.Open(bcfg.Path, 0o600, bopts)
 	if err != nil {
 		bcfg.Logger.Panic("failed to open database", zap.String("path", bcfg.Path), zap.Error(err))
